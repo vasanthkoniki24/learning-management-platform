@@ -2,9 +2,10 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from database import SessionLocal
+from auth import create_access_token
 import models
 
-router = APIRouter(tags=["Authentication"])
+router = APIRouter(prefix="/auth",tags=["Authentication"])
 
 
 def get_db():
@@ -65,9 +66,13 @@ def login(email: str, password: str, db: Session = Depends(get_db)):
             status_code=401,
             detail="Invalid password"
         )
+    
+    token = create_access_token({"user_id": user.id})
 
     return {
-        "message": "Login successful",
-        "user_id": user.id,
-        "role": user.role
+        # "message": "Login successful",
+        # "user_id": user.id,
+        # "role": user.role
+        "access_token": token,
+        "token_type": "bearer"
     }

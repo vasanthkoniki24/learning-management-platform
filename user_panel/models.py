@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Float, Boolean
 from database import Base
 from datetime import datetime
 
@@ -21,6 +21,7 @@ class Course(Base):
     title = Column(String)
     description = Column(String)
     instructor_id = Column(Integer)
+    is_premium = Column(Boolean)
 
 
 class Enrollment(Base):
@@ -41,3 +42,37 @@ class Progress(Base):
     enrollment_id = Column(Integer)
     completed_lessons = Column(Integer)
     progress_percent = Column(Integer)
+
+
+class Plan(Base):
+
+    __tablename__ = "courses_plan"
+
+    id = Column(Integer,primary_key=True)
+    name = Column(String)
+    price = Column(Float)
+    duration_days = Column(Integer)
+
+
+class Subscription(Base):
+
+    __tablename__ = "courses_subscription"
+
+    id = Column(Integer,primary_key=True)
+    user_id = Column(Integer)
+    plan_id = Column(Integer)
+    start_date = Column(DateTime)
+    end_date = Column(DateTime)
+    status = Column(String)
+
+
+
+class Payment(Base):
+
+    __tablename__ = "courses_payment"
+
+    id = Column(Integer,primary_key=True)
+    user_id = Column(Integer)
+    plan_id = Column(Integer)
+    amount = Column(Float)
+    payment_date = Column(DateTime)

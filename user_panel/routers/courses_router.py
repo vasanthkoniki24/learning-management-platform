@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-
+from datetime import datetime
 from database import SessionLocal
 import models
 
@@ -16,15 +16,25 @@ def get_db():
 
 
 @router.get("/")
-def get_courses(db: Session = Depends(get_db)):
+def get_courses(user_id: int, db: Session = Depends(get_db)):
 
-    courses = db.query(models.Course).all()
+    now = datetime.utcnow()
 
-    if not courses:
-        raise HTTPException(
-            status_code=404,
-            detail="No courses available"
-        )
+    subscription = db.query(models.Subscription).filter(
+        models.Subscription.user_id == user_id,
+        models.Subscription.status == "active",
+        models.Subscription.end_date >= now
+    ).first()
+
+    # If user has active subscription show all courses
+    if subscription:
+        courses = db.query(models.Course).all()
+
+    # If no subscription show only free courses
+    else:
+        courses = db.query(models.Course).filter(
+            models.Course.is_premium == False
+        ).all()
 
     return courses
 

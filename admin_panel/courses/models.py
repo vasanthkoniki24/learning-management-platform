@@ -29,7 +29,9 @@ class Course(models.Model):
     )
 
     status = models.CharField(max_length=20, default="active")
+    is_premium = models.BooleanField(default=False)
 
+    
     def __str__(self):
         return self.title
 
@@ -67,5 +69,37 @@ class Progress(models.Model):
 
     completed_lessons = models.IntegerField(default=0)
     progress_percent = models.FloatField(default=0)
+
+
+class Plan(models.Model):
+
+    name = models.CharField(max_length=100)
+    price = models.FloatField()
+    duration_days = models.IntegerField()
+
+    def __str__(self):
+        return self.name
+    
+
+class Subscription(models.Model):
+
+    user = models.ForeignKey(User,on_delete=models.CASCADE)
+    plan = models.ForeignKey(Plan,on_delete=models.CASCADE)
+
+    start_date = models.DateTimeField(auto_now_add=True)
+    end_date = models.DateTimeField()
+
+    status = models.CharField(max_length=20,default="active")
+
+
+
+class Payment(models.Model):
+
+    user = models.ForeignKey(User,on_delete=models.CASCADE)
+    plan = models.ForeignKey(Plan,on_delete=models.CASCADE)
+
+    amount = models.FloatField()
+
+    payment_date = models.DateTimeField(auto_now_add=True)
 
 # Create your models here.
