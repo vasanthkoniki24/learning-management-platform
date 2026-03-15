@@ -1,14 +1,13 @@
 from fastapi import FastAPI
-from routers import users, courses, enrollment, progress
 
-app = FastAPI(title="Learning Platform API")
+from routers.auth_router import router as auth_router
+from routers.courses_router import router as courses_router
+from routers.enrollment_router import router as enrollment_router
+from routers.progress_router import router as progress_router
 
-app.include_router(users.router)
-app.include_router(courses.router)
-app.include_router(enrollment.router)
-app.include_router(progress.router)
+app = FastAPI(title="Learning Management Platform API")
 
-
-@app.get("/")
-def home():
-    return {"message": "Learning Platform API running"}
+app.include_router(auth_router)
+app.include_router(courses_router)
+app.include_router(enrollment_router)
+app.include_router(progress_router)
